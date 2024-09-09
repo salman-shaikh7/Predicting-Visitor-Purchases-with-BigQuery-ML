@@ -90,6 +90,5 @@ GROUP BY will_buy_on_return_visit
 
 ```
 
-
-
 * Result
+![alt text](image.png)
