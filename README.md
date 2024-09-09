@@ -21,9 +21,12 @@ Information about different feature can be found on this link
 
 https://support.google.com/analytics/answer/3437719?hl=en
 
+_________________________________________________
+
+
 ## STEP 1 : Explore ecommerce data
 
->>what % made a purchase?
+>>**what % made a purchase**?
 
 * Query
 
@@ -53,7 +56,7 @@ FROM visitors, purchasers
 
 ![alt text](images/image.png)
 
->>top 5 selling products
+>>**top 5 selling product**s
 Query
 ```sql
 SELECT
@@ -70,8 +73,8 @@ LIMIT 5;
 ```
 ![alt text](images/image-1.png)
 
->>How many visitors bought on subsequent visits to the website?
-could have bought on first as well
+>>**How many visitors bought on subsequent visits to the website?
+could have bought on first as well**
 * Query 
 ```sql
 
@@ -91,4 +94,47 @@ GROUP BY will_buy_on_return_visit
 ```
 
 * Result
-![alt text](image.png)
+
+![alt text](images/image3.png)
+
+
+
+In the world of online marketing, identifying and marketing to these future customers based on the characteristics of their first visit will increase conversion rates and reduce the outflow to competitor sites.
+
+## STEP 2 : features selection and training dataset formation
+
+test whether these two fields are good inputs for your classification model:
+
+1.  **totals.bounces**    (whether the visitor left the website immediately)
+2.  **totals.timeOnSite**   (how long the visitor was on our website)
+
+```sql
+SELECT
+  * EXCEPT(fullVisitorId)
+FROM
+
+  # features
+  (SELECT
+    fullVisitorId,
+    IFNULL(totals.bounces, 0) AS bounces,
+    IFNULL(totals.timeOnSite, 0) AS time_on_site
+  FROM
+    `data-to-insights.ecommerce.web_analytics`
+  WHERE
+    totals.newVisits = 1)
+  JOIN
+  (SELECT
+    fullvisitorid,
+    IF(COUNTIF(totals.transactions > 0 AND totals.newVisits IS NULL) > 0, 1, 0) AS will_buy_on_return_visit
+  FROM
+      `data-to-insights.ecommerce.web_analytics`
+  GROUP BY fullvisitorid)
+  USING (fullVisitorId)
+ORDER BY time_on_site DESC
+LIMIT 10;
+
+```
+
+* Result
+
+![alt text](images/image-4.png)
