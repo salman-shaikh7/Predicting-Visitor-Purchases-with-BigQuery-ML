@@ -1,4 +1,4 @@
-About this project
+## About this project
 
 Title : Predicting Visitor Purchases with BigQuery ML
 
