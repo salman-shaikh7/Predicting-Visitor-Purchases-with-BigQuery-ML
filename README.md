@@ -138,3 +138,16 @@ LIMIT 10;
 * Result
 
 ![alt text](images/image-4.png)
+
+* Conclusion
+
+ **will_buy_on_return_visit** is not known after the first visit. Again, predicting for a subset of users who returned to your website and purchased. Since we don't know the future at prediction time, you cannot say with certainty whether a new visitor comes back and purchases.
+
+Q : time_on_site and bounces will be a good indicator of whether the user will return and purchase or not?
+
+Answer : It's often too early to tell before training and evaluating the model, but at first glance out of the top 10 time_on_site, only 1 customer returned to buy, which isn't very promising. 
+
+
+## STEP 3 : Create a BigQuery dataset to store models
+
+We will create dataset with Dataset ID : **ecommerce**.
