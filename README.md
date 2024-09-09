@@ -1,4 +1,4 @@
-## About this project
+# About this project
 
 Title : Predicting Visitor Purchases with BigQuery ML
 
@@ -13,7 +13,7 @@ Objective :
 
 **BigQuery ML** can create, train, evaluate, and predict with ML models.
 
-> About dataset
+## About dataset
 
 The dataset contains information >about customers, products, orders, logistics, web events and digital marketing campaigns. The contents of this >dataset are synthetic, and are provided to industry practitioners for the purpose of product discovery, testing, and >evaluation.
 
@@ -151,3 +151,115 @@ Answer : It's often too early to tell before training and evaluating the model, 
 ## STEP 3 : Create a BigQuery dataset to store models
 
 We will create dataset with Dataset ID : **ecommerce**.
+
+![alt text](images/image5.png)
+
+
+## STEP 4 : Selection  of BigQuery ML model type and options
+
+* Query 
+
+```sql
+CREATE OR REPLACE MODEL `ecommerce.classification_model`
+OPTIONS
+(
+model_type='logistic_reg',
+labels = ['will_buy_on_return_visit']
+)
+AS
+
+#standardSQL
+SELECT
+  * EXCEPT(fullVisitorId)
+FROM
+
+  # features
+  (SELECT
+    fullVisitorId,
+    IFNULL(totals.bounces, 0) AS bounces,
+    IFNULL(totals.timeOnSite, 0) AS time_on_site
+  FROM
+    `data-to-insights.ecommerce.web_analytics`
+  WHERE
+    totals.newVisits = 1
+    AND date BETWEEN '20160801' AND '20170430') # train on first 9 months
+  JOIN
+  (SELECT
+    fullvisitorid,
+    IF(COUNTIF(totals.transactions > 0 AND totals.newVisits IS NULL) > 0, 1, 0) AS will_buy_on_return_visit
+  FROM
+      `data-to-insights.ecommerce.web_analytics`
+  GROUP BY fullvisitorid)
+  USING (fullVisitorId)
+;
+```
+
+* Output
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+* Result
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+
+## STEP 5 :   Evaluation
+
+For this classification problems you want to minimize the False Positive Rate (predict that the user will return and purchase and they don't) and maximize the True Positive Rate (predict that the user will return and purchase and they do).
+
+This relationship is visualized with a ROC (Receiver Operating Characteristic) curve like the one shown here, where you try to maximize the area under the curve or AUC.
+
+BigQuery ML, roc_auc is simply a queryable field when evaluating your trained ML model.
+
+* Query 
+
+```sql
+SELECT
+  roc_auc,
+  CASE
+    WHEN roc_auc > .9 THEN 'good'
+    WHEN roc_auc > .8 THEN 'fair'
+    WHEN roc_auc > .7 THEN 'not great'
+  ELSE 'poor' END AS model_quality
+FROM
+  ML.EVALUATE(MODEL ecommerce.classification_model,  (
+
+SELECT
+  * EXCEPT(fullVisitorId)
+FROM
+
+  # features
+  (SELECT
+    fullVisitorId,
+    IFNULL(totals.bounces, 0) AS bounces,
+    IFNULL(totals.timeOnSite, 0) AS time_on_site
+  FROM
+    `data-to-insights.ecommerce.web_analytics`
+  WHERE
+    totals.newVisits = 1
+    AND date BETWEEN '20170501' AND '20170630') # eval on 2 months
+  JOIN
+  (SELECT
+    fullvisitorid,
+    IF(COUNTIF(totals.transactions > 0 AND totals.newVisits IS NULL) > 0, 1, 0) AS will_buy_on_return_visit
+  FROM
+      `data-to-insights.ecommerce.web_analytics`
+  GROUP BY fullvisitorid)
+  USING (fullVisitorId)
+
+));
+```
+
+* Result
+
+![alt text](image-4.png)
+
+roc_auc of 0.72, which shows that the model has not great predictive power. Since the goal is to get the area under the curve as close to 1.0 as possible, there is room for improvement.
+
+
+
+Task 6. Improve model performance with feature engineering
