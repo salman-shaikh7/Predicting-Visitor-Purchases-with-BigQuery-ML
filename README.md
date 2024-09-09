@@ -1,6 +1,5 @@
-# About this project
 
-Title : Predicting Visitor Purchases with BigQuery ML
+# **Predicting Visitor Purchases with BigQuery ML**
 
 Objective : 
 1.  Use BigQuery to find public datasets
