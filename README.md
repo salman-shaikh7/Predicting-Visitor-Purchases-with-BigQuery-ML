@@ -6,7 +6,7 @@ Objective :
 2.  Query and explore the ecommerce dataset
 3.  Create a training and evaluation dataset to be used for batch prediction
 4.  Create a classification (logistic regression) model in BigQuery ML
-5.  Evaluate the performance of your machine learning model
+5.  Evaluate the performance of machine learning model
 6.  Predict and rank the probability that a visitor will make a purchase
 
 
@@ -102,7 +102,7 @@ In the world of online marketing, identifying and marketing to these future cust
 
 ## STEP 2 : features selection and training dataset formation
 
-test whether these two fields are good inputs for your classification model:
+test whether these two fields are good inputs for classification model:
 
 1.  **totals.bounces**    (whether the visitor left the website immediately)
 2.  **totals.timeOnSite**   (how long the visitor was on our website)
@@ -140,7 +140,7 @@ LIMIT 10;
 
 * Conclusion
 
- **will_buy_on_return_visit** is not known after the first visit. Again, predicting for a subset of users who returned to your website and purchased. Since we don't know the future at prediction time, you cannot say with certainty whether a new visitor comes back and purchases.
+ **will_buy_on_return_visit** is not known after the first visit. Again, predicting for a subset of users who returned to website and purchased. Since we don't know the future at prediction time, we cannot say with certainty whether a new visitor comes back and purchases.
 
 Q : time_on_site and bounces will be a good indicator of whether the user will return and purchase or not?
 
@@ -208,11 +208,11 @@ FROM
 
 ## STEP 5 :   Evaluation
 
-For this classification problems you want to minimize the False Positive Rate (predict that the user will return and purchase and they don't) and maximize the True Positive Rate (predict that the user will return and purchase and they do).
+For this classification problems we want to minimize the False Positive Rate (predict that the user will return and purchase and they don't) and maximize the True Positive Rate (predict that the user will return and purchase and they do).
 
-This relationship is visualized with a ROC (Receiver Operating Characteristic) curve like the one shown here, where you try to maximize the area under the curve or AUC.
+This relationship is visualized with a ROC (Receiver Operating Characteristic) curve like the one shown here, where we try to maximize the area under the curve or AUC.
 
-BigQuery ML, roc_auc is simply a queryable field when evaluating your trained ML model.
+BigQuery ML, roc_auc is simply a queryable field when evaluating trained ML model.
 
 * Query 
 
@@ -425,7 +425,7 @@ SELECT * EXCEPT(unique_session_id) FROM (
 
 ![alt text](images/image-77.png)
 
-With this new model you now get a roc_auc of 0.91 which is significantly better than the first model.
+With this new model we now get a roc_auc of 0.91 which is significantly better than the first model.
 
 
 ## STEP 8 : Predict which new visitors will come back and purchase
@@ -504,7 +504,7 @@ ORDER BY
 
 The predictions are made in the last 1 month (out of 12 months) of the dataset.
 
-model will now output the predictions it has for those July 2017 ecommerce sessions. You can see three newly added fields:
+model will now output the predictions it has for those July 2017 ecommerce sessions. We can see three newly added fields:
 
 * predicted_will_buy_on_return_visit: whether the model thinks the visitor will buy later (1 = yes)
 * predicted_will_buy_on_return_visit_probs.label: the binary classifier for yes / no
