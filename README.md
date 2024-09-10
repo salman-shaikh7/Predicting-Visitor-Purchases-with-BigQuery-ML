@@ -195,15 +195,15 @@ FROM
 
 * Output
 
-![alt text](image.png)
+![alt text](images/image-00.png)
 
-![alt text](image-1.png)
+![alt text](images/image-11.png)
 
 * Result
 
-![alt text](image-2.png)
+![alt text](images/image-22.png)
 
-![alt text](image-3.png)
+![alt text](images/image-33.png)
 
 
 ## STEP 5 :   Evaluation
@@ -255,7 +255,7 @@ FROM
 
 * Result
 
-![alt text](image-4.png)
+![alt text](images/image-44.png)
 
 roc_auc of 0.72, which shows that the model has not great predictive power. Since the goal is to get the area under the curve as close to 1.0 as possible, there is room for improvement.
 
@@ -339,9 +339,9 @@ SELECT * EXCEPT(unique_session_id) FROM (
 
 * Result 
 
-![alt text](image-5.png)
+![alt text](images/image-55.png)
 
-![alt text](image-6.png)
+![alt text](images/image-66.png)
 
 
 ### Evalution of newly trained model
@@ -423,7 +423,7 @@ SELECT * EXCEPT(unique_session_id) FROM (
 
 * Result 
 
-![alt text](image-7.png)
+![alt text](images/image-77.png)
 
 With this new model you now get a roc_auc of 0.91 which is significantly better than the first model.
 
